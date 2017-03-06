@@ -1,0 +1,27 @@
+<template name="home">
+	di dow are you!
+	<table>
+	<tr>
+	<td>Item Name</td>
+	<td>Kdmer</td>
+	<td>Price</td>
+	<td>Unit</td>
+	<td>Category</td>
+	</tr>
+		
+		{{#each items}}
+		<tr>
+			<td>{{name}}</td>
+			<td>{{kh}}</td>
+			<td>{{price}}</td>
+			<td>{{unit}}</td>
+			<td>{{#each category}}
+					{{this}}
+				{{/each}}
+			</td>
+			</tr>
+		{{/each}}
+		
+	</table>
+	
+</template>
