@@ -1,7 +1,6 @@
-Template.home.helpers({
-	items: function(){
-		return Items.find({})
-		//{"line": Session.get('line')}
-	}
-	
-});
+// Template.home.helpers({
+// 	//return all of the items from database
+// 	items: function(){
+// 		return Items.find({})
+// 	}
+// });

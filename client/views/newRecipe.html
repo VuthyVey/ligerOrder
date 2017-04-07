@@ -1,0 +1,45 @@
+<template name="newRecipe">
+<div class="container">
+	<lable>Recipe Name: <input type="text" id="enRecipeName"></lable>
+	<lable>Khmer Name: <input type="text" id="khRecipeName"></lable>
+	
+	<lable>Serve: <input type="number" id="numOfServe"></lable>
+	<lable>Ready In: <input type="time" id="readyTime"></lable>
+	
+	<input type="file">
+	<br>
+
+	{{#with newRecipe}}
+		{{#each ingredients}}
+			<div id="liger">
+			<p>{{name}} : {{amount}}{{unit}}
+			</p>
+			<button id="deleteItem">x</button>
+			<button id="editItem">edit</button>
+			</div>
+			<div id="llc" style="display: none;">
+			<input type="text" id="editIngredientName" value="{{name}}">
+			<input type="number" id="editIngredientAmount" value="{{amount}}">
+			<input type="text" id="editIngredientUnit" value="{{unit}}">
+			<button id="editDone">Done</button>
+			</div>
+		{{/each}}
+		
+		<br>
+
+		<input type="text" id="ingredientName" class="ingredientsInputs" placeholder="ingredient name"> <input type="number" id="ingredientAmount" class="ingredientsInputs" placeholder="Amount">
+		<input type="text" id="ingredientUnit" class="ingredientsInputs" placeholder="Unit">
+		<button id="newIngredient">Add to ingredients</button>
+		
+		<br>
+		
+		{{#each directions}}
+			<p>{{this.text}}</p>
+		{{/each}}
+		
+		<br>
+		<input type="text" id="direction" placeholder="Direction">
+		<button id="newDirection">Add to directions</button>	
+	{{/with}}
+</div>
+</template>
