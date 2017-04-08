@@ -11,18 +11,20 @@
 
 	{{#with newRecipe}}
 		{{#each ingredients}}
-			<div id="liger">
+			<div class="listDiv" id="item{{id}}">
 			<p>{{name}} : {{amount}}{{unit}}
 			</p>
 			<button id="deleteItem">x</button>
 			<button id="editItem">edit</button>
 			</div>
-			<div id="llc" style="display: none;">
-			<input type="text" id="editIngredientName" value="{{name}}">
-			<input type="number" id="editIngredientAmount" value="{{amount}}">
-			<input type="text" id="editIngredientUnit" value="{{unit}}">
-			<button id="editDone">Done</button>
+			<div class="inputDiv" id="edit{{id}}" style="display: none;">
+				<input type="text" class="editInput" id="editedName" value="{{name}}">
+				<input type="number" class="editInput" id="editedAmount" value="{{amount}}">
+				<input type="text" class="editInput" id="editedUnit" value="{{unit}}">
+				<button id="cancelEditBtn">Cancel</button>
+				<button id="doneEditBtn">Done</button>
 			</div>
+			
 		{{/each}}
 		
 		<br>
