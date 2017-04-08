@@ -5,10 +5,14 @@ var newRecipe = new ReactiveObj({
 	serve: 0,
 	duration: 0,
 	level: "",
-	ingredients: [{id: 121, name: "bannana", amount: "1", unit: "kg"}],
+	ingredients: [{id: 121, name: "bannana", amount: 1, unit: "kg"}],
 	directions: [],
 	owner: ""
 });
+
+var editingIngredient = new ReactiveObj({
+	id: 0, name: "", amount: 1, unit: ""
+})
 //return everything from newRecipe reactiveObj to html template
 Template.newRecipe.helpers({
 	newRecipe: function() {
@@ -62,6 +66,23 @@ Template.newRecipe.events({
 	},
 	'click #editItem': function(e, tpl) {
 		var id = this.id;
+		var name = this.name;
+		var amount = this.amount;
+		var unit = this.unit;
+
+		var editedId = editingIngredient.get("id");
+		var editedName = editingIngredient.get("name");
+		var editedAmount = editingIngredient.get("amount");
+		var editedUnit = editingIngredient.get("unit");
+		if(id != editedId) {
+			$('#edit'+editedId).children('#editedName').val(editedName);
+			$('#edit'+editedId).children('#editedAmount').val(editedAmount);
+			$('#edit'+editedId).children('#editedUnit').val(editedUnit);
+		}
+		editingIngredient.set("id", id);
+		editingIngredient.set("name", name);
+		editingIngredient.set("amount", amount);
+		editingIngredient.set("unit", unit);
 		$('.listDiv').show();
 		$('.inputDiv').hide();
 		$('#item'+id).hide();
