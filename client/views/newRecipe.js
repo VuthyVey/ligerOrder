@@ -1,3 +1,4 @@
+
 // New Recipe Reactive Object template 
 var newRecipe = new ReactiveObj({
 	name: "",
@@ -5,19 +6,42 @@ var newRecipe = new ReactiveObj({
 	serve: 0,
 	duration: 0,
 	level: "",
-	ingredients: [{id: 121, name: "bannana", amount: 1, unit: "kg"}],
-	directions: [],
+	ingredients: [{id: 121, name: "bannana", amount: 1, unit: "kg", editing: false}],
+	directions: [{id: 121, text: "1. Heat the pan"}],
 	owner: ""
 });
 
-var editingIngredient = new ReactiveObj({
-	id: 0, name: "", amount: 1, unit: ""
-})
+function toCapitalize(str)
+{
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
+Session.set('editingIngredientId', '');
+Session.set('editingDirectionId', '');
+
+var editingDirection = new ReactiveObj({
+	id: 0, text: ""
+});
 //return everything from newRecipe reactiveObj to html template
 Template.newRecipe.helpers({
 	newRecipe: function() {
 		return newRecipe.get();
-	}
+	},
+	settings: function() {
+    return {
+      position: "top",
+      limit: 6,
+      rules: [
+        {
+          token: '',
+          collection: Items,
+          field: "name",
+          template: Template.autoComplete
+        },
+        
+      ]
+    };
+  }
 });
 //all the events that listen from the html template
 Template.newRecipe.events({
@@ -32,7 +56,7 @@ Template.newRecipe.events({
 		newRecipe.update('kh_name', updater);
 	},
 	//when newIngredient button clicked or keyup, all of the values from inputs will add to newRecipe Obj
-	'click #newIngredient, keyup .ingredientsInputs': function(e,tpl) {
+	'click #newIngredientBtn, keyup .ingredientsInputs': function(e,tpl) {
 		//if the event is click or Enter key keyup then the code is fire
 		if(e.type == 'click' || e.keyCode == 13){
 			var name = $('#ingredientName');
@@ -43,7 +67,7 @@ Template.newRecipe.events({
 			//id need to modify or delete items
 
 			//create objects for push ingredientsObj 
-			var ingredientsObj = {id: Random.id(), "name": name.val(), "amount": amount.val(), "unit": unit.val()};
+			var ingredientsObj = {id: Random.id(), "name": toCapitalize(name.val()), "amount": amount.val(), "unit": unit.val(), "editing": false};
 			newRecipe.push('ingredients', ingredientsObj);
 			//clear all the inputs text
 			name.val("");
@@ -52,7 +76,7 @@ Template.newRecipe.events({
 		}
 		
 	},
-	'click #deleteItem': function(e, tpl) {
+	'click #deleteIngredientBtn': function(e, tpl) {
 		var id = this.id;
 		var ingredients = newRecipe.get("ingredients");
 		
@@ -64,41 +88,41 @@ Template.newRecipe.events({
 		}
 		//newRecipe.splice("ingredients", id-1, 1);			
 	},
-	'click #editItem': function(e, tpl) {
+	'click #editIngredientBtn, click #itemP': function(e, tpl) {
 		var id = this.id;
-		var name = this.name;
-		var amount = this.amount;
-		var unit = this.unit;
 
-		var editedId = editingIngredient.get("id");
-		var editedName = editingIngredient.get("name");
-		var editedAmount = editingIngredient.get("amount");
-		var editedUnit = editingIngredient.get("unit");
-		if(id != editedId) {
-			$('#edit'+editedId).children('#editedName').val(editedName);
-			$('#edit'+editedId).children('#editedAmount').val(editedAmount);
-			$('#edit'+editedId).children('#editedUnit').val(editedUnit);
+		var ingredientsArray = newRecipe.get("ingredients");
+		for(var i = 0; i < ingredientsArray.length; i++) {
+			if (ingredientsArray[i].id == Session.get("editingIngredientId")) {
+				ingredientsArray[i].editing = false;
+				break;
+			}
 		}
-		editingIngredient.set("id", id);
-		editingIngredient.set("name", name);
-		editingIngredient.set("amount", amount);
-		editingIngredient.set("unit", unit);
-		$('.listDiv').show();
-		$('.inputDiv').hide();
-		$('#item'+id).hide();
-		$('#edit'+id).show();
-			
+
+		for(var i = 0; i < ingredientsArray.length; i++) {
+			if (ingredientsArray[i].id == id) {
+				ingredientsArray[i].editing = true;
+				Session.set('editingIngredientId', id);
+				break;
+			}
+		}
+		function updater () {
+			return ingredientsArray;
+		}
+		newRecipe.forceInvalidate();
+		newRecipe.update("ingredients", updater);		
 	},
 	
-	'click #doneEditBtn, keyup .editInput' : function (e, tpl) {
+	'click #updateIngreBtn, keyup .editInput' : function (e, tpl) {
 		if(e.type == "click" || e.keyCode == 13) {
 			var id = this.id;
-			var name = $('#edit'+id).children('#editedName');
-			var amount = $('#edit'+id).children('#editedAmount');
-			var unit = $('#edit'+id).children('#editedUnit');
+
+			var name = $('#editingIngreName').val();
+			var amount = $('#editingIngreAmount').val();
+			var unit = $('#editingIngreUnit').val();
 
 			var ingredientsArray = newRecipe.get("ingredients");
-			var ingredientsObj = {id: id, "name": name.val(), "amount": amount.val(), "unit": unit.val()};
+			var ingredientsObj = {id: id, "name": name, "amount": amount, "unit": unit, "editing": false};
 			for(var i = 0; i < ingredientsArray.length; i++) {
 				if (ingredientsArray[i].id == id) {
 					ingredientsArray[i] = ingredientsObj;
@@ -111,27 +135,104 @@ Template.newRecipe.events({
 			}
 			newRecipe.forceInvalidate("ingredients");
 			newRecipe.update("ingredients", updater);
-		
-			$('#edit'+id).hide();
-			$('#item'+id).show();
+
 		}
 	},
-	'click #cancelEditBtn' : function (e, tpl) {
+	'click #cancelIngreBtn' : function (e, tpl) {
 		var id = this.id;
-		$('#edit'+id).hide();
-		$('#item'+id).show();
-		$('#edit'+id).children('#editedName').val(this.name);
-		$('#edit'+id).children('#editedAmount').val(this.amount);
-		$('#edit'+id).children('#editedUnit').val(this.unit);
+		var ingredientsArray = newRecipe.get("ingredients");
+		for(var i = 0; i < ingredientsArray.length; i++) {
+				if (ingredientsArray[i].id == id) {
+					ingredientsArray[i].editing = false;
+					break;
+				}
+		}
+		function updater() {
+			return ingredientsArray;
+		}
+
+		newRecipe.forceInvalidate();
+		newRecipe.update("ingredients", updater)
 	},
-	'click #newDirection, keyup #direction': function(e,tpl) {
+	'click #newDirectionBtn, keyup #direction': function(e,tpl) {
 		if(e.type == 'click' || e.keyCode == 13) {
-			var direction = $('#direction');
-			var directionObj = {text: direction.val()}
+			var direction = $('#newDirectionInput');
+			var directionObj = {id: Random.id(), text: direction.val(), editing: false}
 			newRecipe.push('directions', directionObj);
-			console.log(newRecipe.get())
 			direction.val("");
 		}
 		
-	}
+	},
+	'click #deleteDirectionBtn' : function (e, tpl) {
+		var id = this.id;
+		var directionsArray = newRecipe.get("directions");
+
+		for(var i = 0; i < directionsArray.length; i++ ) {
+			if (directionsArray[i].id == id){ 
+				newRecipe.splice("directions", i ,1)
+			}
+		}
+	},
+	'click #editDirectionBtn' : function (e, tpl) {
+		var id = this.id;
+		var directionsArray = newRecipe.get("directions");
+		
+		for(var i = 0; i < directionsArray.length; i++ ) {
+			if (directionsArray[i].id == Session.get("editingDirectionId")){ 
+				directionsArray[i].editing = false;
+				break;
+			}
+		}
+
+		for(var i = 0; i < directionsArray.length; i++ ) {
+			if (directionsArray[i].id == id){ 
+				directionsArray[i].editing = true;
+				Session.set("editingDirectionId", id);
+				break;
+			}
+		}
+		function updater() {
+			return directionsArray;
+		}
+		newRecipe.forceInvalidate("directions");
+		newRecipe.update("directions", updater);
+	},
+
+	'click #dirUpdateBtn' : function (e, tpl) {
+		var id = this.id;
+		var text = $('#editedDirection');
+		var directionsArray = newRecipe.get("directions");
+		var directionObj = {id: id, text: text.val(), editing: false};
+		for(var i = 0; i < directionsArray.length; i++ ) {
+			if (directionsArray[i].id == id){ 
+				directionsArray[i] = directionObj;
+				break;
+			}
+		}
+
+		function updater () {
+			return directionsArray 
+		}
+		newRecipe.forceInvalidate();
+		newRecipe.update("directions", updater);
+	},
+	'click #dirCancelBtn' : function (e, tpl) {
+		var id = this.id;
+		var directionsArray = newRecipe.get("directions");
+		for(var i = 0; i < directionsArray.length; i++ ) {
+			if (directionsArray[i].id == id){ 
+				directionsArray[i].editing = false;
+				break;
+			}
+		}
+		function updater() {
+			return directionsArray;
+		}
+		newRecipe.forceInvalidate();
+		newRecipe.update("directions", updater);
+	},
+	"autocompleteselect input": function(event, template, doc) {
+    	console.log("selected ", doc);
+    	$("#ingredientUnit").val(doc.unit)
+  	}
 });

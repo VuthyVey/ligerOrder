@@ -1,47 +1,154 @@
 <template name="newRecipe">
 <div class="container">
-	<lable>Recipe Name: <input type="text" id="enRecipeName"></lable>
-	<lable>Khmer Name: <input type="text" id="khRecipeName"></lable>
+	<div class="row">
+		<div class="input-field col s6 m6">
+		    <input id="enRecipeName" type="text" class="validate">
+		    <label for="enRecipeName">Recipe Name</label>
+		</div>
+		<div class="input-field col s12 m6">
+		    <input id="khRecipeName" type="text" class="validate">
+		    <label for="khRecipeName">Khmer Name</label>
+		</div>
+	</div>
+	<div class="row">
+		<div class="input-field col s12 m6">
+		    <input id="numOfServe" type="number" class="validate">
+		    <label for="numOfServe">Serve</label>
+		</div>
+		<div class="input-field col s12 m6">
+		    <input id="readyTime" type="text" class="validate">
+		    <label for="readyTime">Ready In</label>
+		</div>
+	</div>
+
 	
-	<lable>Serve: <input type="number" id="numOfServe"></lable>
-	<lable>Ready In: <input type="time" id="readyTime"></lable>
-	
-	<input type="file">
 	<br>
-
 	{{#with newRecipe}}
-		{{#each ingredients}}
-			<div class="listDiv" id="item{{id}}">
-			<p>{{name}} : {{amount}}{{unit}}
-			</p>
-			<button id="deleteItem">x</button>
-			<button id="editItem">edit</button>
+		<div class="row">
+			<div class="row col m6">
+				<ul class="collection with-header">
+					<li class="collection-header">
+						<h5>Ingredients</h5>
+					</li>
+					{{#each ingredients}}
+						{{#if editing}}
+							{{> ingredientInputsTpl}}
+						{{else}}
+							{{> ingredientListsTpl}}
+						{{/if}}
+					{{/each}}
+				</ul>
 			</div>
-			<div class="inputDiv" id="edit{{id}}" style="display: none;">
-				<input type="text" class="editInput" id="editedName" value="{{name}}">
-				<input type="number" class="editInput" id="editedAmount" value="{{amount}}">
-				<input type="text" class="editInput" id="editedUnit" value="{{unit}}">
-				<button id="cancelEditBtn">Cancel</button>
-				<button id="doneEditBtn">Done</button>
-			</div>
-			
-		{{/each}}
-		
-		<br>
 
-		<input type="text" id="ingredientName" class="ingredientsInputs" placeholder="ingredient name"> <input type="number" id="ingredientAmount" class="ingredientsInputs" placeholder="Amount">
-		<input type="text" id="ingredientUnit" class="ingredientsInputs" placeholder="Unit">
-		<button id="newIngredient">Add to ingredients</button>
+			<div class="row col m6">
+				<div class="input-field col m7 s12">
+					{{> inputAutocomplete settings=settings id="ingredientName" class="ingredientsInputs" placeholder="Ingredients Inputs"}}
+				</div>
+				<div class="input-field col m3 s12">
+					<input type="number" id="ingredientAmount" class="ingredientsInputs" min="0.01" placeholder="Amount">
+				</div>
+				<div class="input-field col m2 s12">
+					<input type="text" id="ingredientUnit" class="ingredientsInputs" placeholder="Unit">
+				</div>
+				<div class="col m12 s12">
+					<button id="newIngredientBtn" class="waves-effect waves-light cyan darken-4 btn">Add to Ingredient</button>
+			</div >		
+		</div>
+		</div>
+		
+		
+		
 		
 		<br>
 		
-		{{#each directions}}
-			<p>{{this.text}}</p>
-		{{/each}}
-		
+		<div class="row">
+			<ul class="collection with-header col m6">
+				<li class="collection-header">
+					<h5>Directions</h5>
+				</li>		
+				{{#each directions}}
+					{{#if editing}}
+						{{> directionInputsTpl}}
+					{{else}}
+						{{> directionListTpl}}	
+					{{/if}}
+				{{/each}}			
+			</ul>
+		</div>
 		<br>
-		<input type="text" id="direction" placeholder="Direction">
-		<button id="newDirection">Add to directions</button>	
+		
+		<div class="row">
+			<div class="col m8 s12 input-field">
+				<input type="text" id="newDirectionInput" placeholder="Direction">
+			</div>
+			<div class="col m4 s12">
+				<button id="newDirectionBtn" class="waves-effect waves-light cyan darken-4 btn">Add to Directions</button>
+			</div >	
+		</div>
+		
 	{{/with}}
 </div>
+</template>
+
+<template name="ingredientListsTpl">
+	<li class="collection-item">
+		<span>{{amount}}{{unit}} of {{name}}</span>
+		
+		<a id="deleteIngredientBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">delete</i></a>
+
+		<a id="editIngredientBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">mode_edit</i></a>
+
+	</li>
+</template>
+
+<template name="ingredientInputsTpl">
+<li class="collection-item">
+	<div class="ingredientEditDiv">
+		<div class="row">
+			<div class="col m5">
+				<label for="editingIngreName">Ingredient Name</label>
+			<input type="text" id="editingIngreName" value="{{name}}">
+			</div>
+			<div class="col m2">
+				<label for="editingIngreAmount">Amount</label>
+				<input type="number" id="editingIngreAmount" value="{{amount}}">
+			</div>
+			<div class="col m2">
+				<label for="editingIngreUnit">Unit</label>
+				<input type="text" id="editingIngreUnit" value="{{unit}}">
+			</div>
+			<div class="col m3">
+				<a id="cancelIngreBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">clear</i></a>
+
+				<a id="updateIngreBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">done</i></a>
+			</div>
+		</div>
+	</div>
+</li>
+</template>
+
+<template name="directionListTpl">
+<li class="collection-item">
+		<span>{{text}}</span>
+		
+		<a id="editDirectionBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">delete</i></a>
+
+		<a id="deleteDirectionBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">mode_edit</i></a>
+</li>
+	
+</template>
+
+<template name="directionInputsTpl">
+	<div class="editDiv">
+		<input type="text" id="editedDirection" value="{{text}}">
+		<div class="col m3">
+				<a id="cancelIngreBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">clear</i></a>
+
+				<a id="updateIngreBtn" class="secondary-content modify-icon"><i class="material-icons cyan-text text-darken-4">done</i></a>
+		</div>
+	</div>
+</template>
+
+<template name="autoComplete">
+	<span>{{name}} <span class="badge" style="color: white">({{unit}})</span></span>
 </template>
