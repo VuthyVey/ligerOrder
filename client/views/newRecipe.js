@@ -4,8 +4,7 @@ var newRecipe = new ReactiveObj({
 	name: "",
 	kh_name: "",
 	serve: 0,
-	duration: 0,
-	level: "",
+	readyTime: 0,
 	ingredients: [{id: 121, name: "bannana", amount: 1, unit: "kg", editing: false}],
 	directions: [{id: 121, text: "1. Heat the pan"}],
 	owner: ""
@@ -45,16 +44,6 @@ Template.newRecipe.helpers({
 });
 //all the events that listen from the html template
 Template.newRecipe.events({
-	'blur #enRecipeName':function(e,tpl){
-		var name = $('#enRecipeName').val();
-		var updater = function() {return name};
-		newRecipe.update('name', updater);
-	},
-	'blur #khRecipeName':function(e,tpl){
-		var kh_name = $('#khRecipeName').val();
-		var updater = function() {return kh_name};
-		newRecipe.update('kh_name', updater);
-	},
 	//when newIngredient button clicked or keyup, all of the values from inputs will add to newRecipe Obj
 	'click #newIngredientBtn, keyup .ingredientsInputs': function(e,tpl) {
 		//if the event is click or Enter key keyup then the code is fire
@@ -232,7 +221,27 @@ Template.newRecipe.events({
 		newRecipe.update("directions", updater);
 	},
 	"autocompleteselect input": function(event, template, doc) {
-    	console.log("selected ", doc);
     	$("#ingredientUnit").val(doc.unit)
+  	},
+  	'click #saveRecipeBtn' : function (e, tpl) {
+
+  		var enRecipeName = $('#enRecipeName');
+  		var khRecipeName = $('#khRecipeName');
+  		var serve = $("#numOfServe");
+  		var readyTime = $('#readyTime');
+  		var owner = "Vuthy";
+
+  		var recipeObj = newRecipe.get();
+
+  		recipeObj.timeCreated = Date.now();
+  		recipeObj.name = enRecipeName.val();
+  		recipeObj.kh_name = khRecipeName.val();
+  		recipeObj.serve = serve.val();
+  		recipeObj.readyTime = readyTime.val();
+  		recipeObj.owner = owner;
+
+  		Recipes.insert(recipeObj);
+  		Router.go("/")
+  		
   	}
 });
