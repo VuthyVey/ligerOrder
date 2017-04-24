@@ -76,20 +76,33 @@ Template.itemsTable.events({
 		var ingredientKhName = this.kh;
 		var cost = this.cost;
 		var unit = this.unit;
+		var category = this.category;
 		var amount = e.currentTarget.previousSibling.previousElementSibling.value;
-		amount = parseFloat(amount)
-		var orderObj = {name: ingredientEnName,
+		amount = parseFloat(amount);
+
+		var id =  Session.get('orderID');
+		var checking = Orders.findOne({"_id": id}, {orderedItems: { $elemMatch : {name:ingredientEnName}}});
+		console.log(checking)
+		checking = typeof checking == "object";
+
+		if (checking) {
+			Meteor.call('amountUpdateMethod', id, ingredientEnName, amount)
+		} else {
+			var orderObj = {name: ingredientEnName,
 								kh_name: ingredientKhName,
 								cost: cost,
 								unit: unit,
 								amount: amount,
+								category: category,
 								totalCost: Math.round((amount * cost) * 100) / 100
-							}
+						}
 		try {
 			Orders.update({_id: Session.get("orderID")}, { $push: { orderedItems: orderObj }} )
 		} catch (e) {
 			console.log(e);
 		}
+		}
+		
 		e.currentTarget.previousElementSibling.previousElementSibling.value = ""
 
 		//
