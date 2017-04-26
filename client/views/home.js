@@ -81,7 +81,7 @@ Template.itemsTable.events({
 		amount = parseFloat(amount);
 
 		var id =  Session.get('orderID');
-		var checking = Orders.findOne({"_id": id}, {orderedItems: { $elemMatch : {name:ingredientEnName}}});
+		var checking = Orders.find({"_id": id, orderedItems: { $elemMatch : {name:ingredientEnName}}}).fetch()[0];
 		console.log(checking)
 		checking = typeof checking == "object";
 
@@ -108,3 +108,9 @@ Template.itemsTable.events({
 		//
 	}
 });
+
+Template.recipesList.helpers({
+	Recipes : function () {
+		return Recipes.find({});
+	}
+})
