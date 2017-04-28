@@ -1,5 +1,6 @@
 Session.setDefault("searchItem", "");
 Session.setDefault("orderID", "");
+Session.setDefault("userServe", 6);
 
 Template.orderList.helpers({
 	//return all of the items frm database
@@ -112,5 +113,43 @@ Template.itemsTable.events({
 Template.recipesList.helpers({
 	Recipes : function () {
 		return Recipes.find({});
+	}
+})
+
+Template.recipesList.events({
+	"keyup #userServeInput" : function () {
+		var userServe = $("#userServeInput").val();
+		Session.set("userServe", userServe)
+	},
+	"click #recipeOrderBtn" : function (e, tpl){
+		console.log(this._id);
+		var x = Recipes.find({"_id": this._id}).fetch()[0];
+
+		var newRecipeOrderObj = {
+			"recipeName" : x.name,
+			"items": x.ingredients
+		}
+	try {
+			Orders.update({_id: Session.get("orderID")}, { $push: { "orderedRecipes": newRecipeOrderObj}} )
+		} catch (e) {
+			console.log(e);
+		}
+		
+		
+	}
+});
+
+
+Template.recipeContent.rendered = function () {
+  $('.collapsible').collapsible();
+};
+
+
+
+Template.ingredientInfo.helpers({
+	amountWithServe: function(amount, recipeServe) {	
+		var userServe = Session.get("userServe")
+		var finalAmount = Math.round((amount * (userServe/recipeServe)) * 100) / 100
+		return finalAmount;
 	}
 })
