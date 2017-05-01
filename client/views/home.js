@@ -9,6 +9,16 @@ Template.orderList.helpers({
 	}
 });
 
+Template.registerHelper('unitFilter', function(amount, unit) {
+		
+		if(amount < 1 && unit == "kg") {
+			return (parseFloat(amount * 1000)) + "g";
+		} else {
+			return amount + unit
+		}
+	}
+)
+
 Template.orderList.onCreated(function bodyOnCreated(){
 	Meteor.autorun(function() {
 		if(Session.get("data_loaded")) {
@@ -27,7 +37,7 @@ Template.orderList.events({
 		  { $pull: { 'orderedItems': { name: name } } }
 		);
 	}
-})
+});
 
 var x = {
 	timeOrdered:1212,
@@ -117,26 +127,44 @@ Template.recipesList.helpers({
 })
 
 Template.recipesList.events({
-	"keyup #userServeInput" : function () {
-		var userServe = $("#userServeInput").val();
-		Session.set("userServe", userServe)
+	"keyup #userServeInput" : function (e) {
+		var userServe = e.currentTarget.value;
+		Session.set("userServe", userServe);
+		console.log(Session.get("userServe"))
 	},
 	"click #recipeOrderBtn" : function (e, tpl){
-		console.log(this._id);
-		var x = Recipes.find({"_id": this._id}).fetch()[0];
+		var x = Recipes.find({"_id": this._id}, {fields: {"ingredients.editing": 0}}).fetch()[0];
+		
+		var recipeServe = this.serve;
+		var userServe = Session.get("userServe");
+
+		var totalRecipeCost = 0;
+		for (var i = 0; i < x.ingredients.length; i++){
+			var amount = parseFloat(x.ingredients[i].amount);
+			var itemCost = Items.findOne({"name": x.ingredients[i].name},{fields: {cost: 1}}).cost;
+			var totalAmount = Math.round((amount * (userServe/recipeServe)) * 100) / 100;
+
+			x.ingredients[i].amount = totalAmount;
+			x.ingredients[i].cost =  itemCost;
+			x.ingredients[i].totalCost = Math.round(((totalAmount * itemCost)) * 100) / 100;			
+			totalRecipeCost += Math.round(((totalAmount * itemCost)) * 100) / 100;
+		}
 
 		var newRecipeOrderObj = {
 			"recipeName" : x.name,
-			"items": x.ingredients
-		}
-	try {
-			Orders.update({_id: Session.get("orderID")}, { $push: { "orderedRecipes": newRecipeOrderObj}} )
-		} catch (e) {
-			console.log(e);
-		}
+			"items": x.ingredients,
+			"serve": userServe,
+			"totalRecipeCost": Math.round((totalRecipeCost) * 100) / 100
+		};
 		
-		
-	}
+		Session.set('userServe', 6);
+
+		try {
+				Orders.update({_id: Session.get("orderID")}, { $push: { "orderedRecipes": newRecipeOrderObj}} )
+			} catch (e) {
+				console.log(e);
+			}	
+		}
 });
 
 
@@ -148,7 +176,7 @@ Template.recipeContent.rendered = function () {
 
 Template.ingredientInfo.helpers({
 	amountWithServe: function(amount, recipeServe) {	
-		var userServe = Session.get("userServe")
+		var userServe = Session.get("userServe");
 		var finalAmount = Math.round((amount * (userServe/recipeServe)) * 100) / 100
 		return finalAmount;
 	}
