@@ -12,20 +12,28 @@ Meteor.methods({
 		console.log("done");
     },
     totalOrderCostCalc(collectionId) {
-    	var x = Orders.aggregate([
-    	{$unwind: { path: "$orderedRecipes", preserveNullAndEmptyArrays: true}},
-    	{$unwind: { path: "$orderedItems", preserveNullAndEmptyArrays: true}},
-    	{$group: {"_id": "$_id", totalOrderCost: {$sum: "$orderedRecipes.totalRecipeCost"}, totalCost: {$sum: "$orderedItems.totalCost"}}}]);
+    	var groupedCostsArray = Orders.aggregate([
+    	{$unwind: { 
+    		path: "$orderedRecipes", "preserveNullAndEmptyArrays": true}
+    	},
+    	{$group: {
+    		"_id": "$_id", 
+    		totalRecipeCost: {$sum: "$orderedRecipes.totalRecipeCost"},
+    		orderedItems: {$first: "$orderedItems"}
+    	}},
+    	{$unwind: 
+    		{ path: "$orderedItems", "preserveNullAndEmptyArrays": true}
+    	},
+    	{$group: {
+    		"_id": "$_id", 
+    		totalItemCost: {$sum: "$orderedItems.totalCost"},
+    		totalRecipeCost: {$first: "$totalRecipeCost"}
+    	}}
+    	]);
 
-    	// var y = Orders.aggregate([
-    	// {$unwind: { path: "$orderedItems"}},
-    	// {$group: {"_id": "$_id", totalCost: {$sum: "$orderedItems.totalCost"}}}
-    	// ]);
-    	console.log(x)
-    	var total =  (x[0].totalOrderCost == null ? 0 :  x[0].totalOrderCost) + (x[0].totalCost == null ? 0 : x[0].totalCost)
+    	var total =  (groupedCostsArray[0].totalRecipeCost == null ? 0 :  groupedCostsArray[0].totalRecipeCost) + (groupedCostsArray[0].totalItemCost == null ? 0 : groupedCostsArray[0].totalItemCost) 
+ 
+      	Orders.update({_id: collectionId}, {$set: {"totalOrderCost": total}});//Orders.update({_id: collectionId}, {$set: {"totalOrderCost": total}});
 
-    	Orders.update({_id: collectionId}, {$set: {"totalOrderCost": total}});
-    	//console.log(x);
-    	console.log(total)
     }
 });
