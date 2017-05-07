@@ -22,16 +22,7 @@ Template.registerHelper('unitFilter', function(amount, unit) {
 Template.orderList.onCreated(function bodyOnCreated(){
 	Meteor.autorun(function() {
 		if(Session.get("data_loaded")) {
-			Session.set("orderID", Orders.find({}).fetch()[0]._id);
-			
-			Meteor.call('totalOrderCostCalc', Session.get("orderID"))
-			
-
-			
-			console.log("Hi")
-			//console.log("The order List modified", Orders.find({_id: Session.get("orderID")}).fetch());
-		
-
+			Session.set("orderID", Orders.find({}).fetch()[0]._id);		
 		}
 	});
 });
@@ -185,12 +176,15 @@ Template.recipesList.events({
 			"totalRecipeCost": Math.round((totalRecipeCost) * 100) / 100
 		};
 
+		var totalRecipeCost = Math.round((totalRecipeCost) * 100) / 100
 	
 		
 		Session.set('userServe', 6);
+		//Meteor.call('updateOrderCost', Session.get("orderID"), totalRecipeCost)
+		
 
 		try {
-				Orders.update({_id: Session.get("orderID")}, { $push: { "orderedRecipes": newRecipeOrderObj}} )
+				Orders.update({_id: Session.get("orderID")}, { $push: { "orderedRecipes": newRecipeOrderObj}, $inc: { "totalOrderCost": totalRecipeCost }})
 			} catch (e) {
 				console.log(e);
 			}	
@@ -216,9 +210,10 @@ Template.recipeContent.events({
 	"click #delRecipeOrderBtn" : function () {
 		var orderID = Session.get("orderID");
 		var recipeID = this._id;
+		console.log(this.totalRecipeCost)
 		Orders.update(
 		  { _id: orderID },
-		  { $pull: { 'orderedRecipes': { _id: recipeID} } }
+		  { $inc: {totalOrderCost: this.totalRecipeCost * -1}, $pull: { 'orderedRecipes': { _id: recipeID}}}
 		);
 	}
 });

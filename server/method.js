@@ -35,5 +35,12 @@ Meteor.methods({
  
       	Orders.update({_id: collectionId}, {$set: {"totalOrderCost": total}});//Orders.update({_id: collectionId}, {$set: {"totalOrderCost": total}});
 
+    },
+    updateOrderCost(collectionId, value){
+    	Orders.update(
+		   { "_id": collectionId },
+		    { $inc: { "totalOrderCost": value }}
+		  
+		)
     }
-});
+}); 

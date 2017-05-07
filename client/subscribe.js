@@ -8,4 +8,5 @@ Meteor.startup(function() {
   Meteor.subscribe('orders', function(){
      //Set the reactive session as true to indicate that the data have been loaded
      Session.set('data_loaded', true); 
+     Meteor.call('totalOrderCostCalc', Session.get("orderID"))
   });
