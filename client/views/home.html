@@ -23,8 +23,9 @@
 				<li class="collection-item"><a class="btn btn-sm" id="clearIngredientBtn">x</a>	<span class="badge new" data-badge-caption="free">${{totalCost}}</span> {{name}}: {{amount}}{{unit}}</li>
 			{{/each}}
 			</ul>
-
-				<button id="orderBtn">Order</button>
+			
+			<p>Total Cost: {{totalOrderCost}}</p>
+			<button id="orderBtn">Order</button>
 	    {{/each}}
 	   
 	</div>
@@ -91,12 +92,12 @@
 
 <template name="recipeContent">
 	<li>
-      <div class="collapsible-header"><i class="material-icons">place</i>{{recipeName}}</div>
+      <div class="collapsible-header"><i class="material-icons">place</i><button id="delRecipeOrderBtn">x</button>{{recipeName}}</div>
       <div class="collapsible-body"><span>
 
       	<ul class="collection">      	
       	{{#each items}}
-			<li class="collection-item">{{name}}: {{unitFilter amount unit}}   |   ${{cost}}/{{unit}} x {{amount}} = ${{totalCost}}
+			<li class="collection-item">{{name}}: {{unitFilter amount unit}}   |   <span style="float: right;">${{cost}}/{{unit}} x {{amount}} = ${{totalCost}}</span>
 			</li>
       	{{/each}}
       	</ul>
