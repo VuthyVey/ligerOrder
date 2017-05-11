@@ -181,7 +181,7 @@ Template.recipesList.events({
 		var removalIndex = [];
 
 		for (var i = 0; i < recipe.ingredients.length; i++){
-			var amount = parseFloat(x.ingredients[i].amount);
+			var amount = parseFloat(recipe.ingredients[i].amount);
 			//Find if each ingredient match with items name and unit
 			var itemsObj = Items.find({"name": recipe.ingredients[i].name, "unit": recipe.ingredients[i].unit},{fields: {cost: 1, name: 1, unit: 1}}).fetch();
 
@@ -204,7 +204,7 @@ Template.recipesList.events({
 		for(var i = 0; i < removalIndex.length; i++) {
 			recipe.ingredients.splice(removalIndex[i], 1);
 		}
-			
+		console.log("Hello")	
 		totalRecipeCost = Math.round((totalRecipeCost) * 100) / 100
 		// Now recipe.ingredients is fresh update (ingredients from recipe == items in Items)
 		// Add data to the object and calcuate the costs
@@ -215,15 +215,11 @@ Template.recipesList.events({
 			"serve": userServe,
 			"totalRecipeCost": totalRecipeCost
 		};
-
-
 		
-	
-		
+		// Change the session to its default value
 		Session.set('userServe', 6);
-		//Meteor.call('updateOrderCost', Session.get("orderID"), totalRecipeCost)
-		
 
+		
 		try {
 				Orders.update({_id: Session.get("orderID")}, { $push: { "orderedRecipes": newRecipeOrderObj}, $inc: { "totalOrderCost": totalRecipeCost }})
 			} catch (e) {
