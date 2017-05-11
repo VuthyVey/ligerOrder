@@ -142,6 +142,7 @@ Template.itemsTable.events({
 				category: category,
 				totalCost: Math.round((amount * cost) * 100) / 100
 			}
+			
 			try {
 				Orders.update({_id: Session.get("orderID")}, { $push: { orderedItems: orderObj }} )
 			} catch (e) {
@@ -194,9 +195,9 @@ Template.recipesList.events({
 				var itemCost = itemsObj[0].cost;	
 				var totalAmount = Math.round((amount * (userServe/recipeServe)) * 100) / 100;
 
-				x.ingredients[i].amount = totalAmount;
-				x.ingredients[i].cost =  itemCost;
-				x.ingredients[i].totalCost = Math.round(((totalAmount * itemCost)) * 100) / 100;			
+				recipe.ingredients[i].amount = totalAmount;
+				recipe.ingredients[i].cost =  itemCost;
+				recipe.ingredients[i].totalCost = Math.round(((totalAmount * itemCost)) * 100) / 100;			
 				totalRecipeCost += Math.round(((totalAmount * itemCost)) * 100) / 100;
 			}			
 		}
