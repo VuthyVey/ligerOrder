@@ -14,7 +14,7 @@ Template.registerHelper('unitFilter', function(amount, unit) {
 Template.orderList.helpers({
 	//Return all of the items from database
 	orders: function(){
-		return Orders.find({});	
+		return Orders.find({});
 	}
 });
 
@@ -33,9 +33,11 @@ Template.orderList.events({
 		var id =  Session.get('orderID');
 		console.log(id)
 		var name = this.name;
+		var totalCost = this.totalCost * -1;
+
 		Orders.update(
 		  { _id: id },
-		  { $pull: { 'orderedItems': { name: name } } }
+		  { $pull: { 'orderedItems': { name: name } }, $inc : {totalOrderCost: totalCost} }
 		);
 	}
 });
@@ -77,7 +79,7 @@ var x = {
 }
 
 Template.itemsTable.helpers({
-	// Return all of the items frm database
+	// Return all of the items from database
 	items: function(){
 		// Session searchItem would change when the search input is keyup
 		if(Session.get("searchItem") == "") {
@@ -133,6 +135,7 @@ Template.itemsTable.events({
 			Meteor.call('amountUpdateMethod', orderId, ingredientEnName, amount)
 		} else {
 			// Just push a new items with orderObj information to orderedItems array
+			var totalCost = Math.round((amount * cost) * 100) / 100
 			var orderObj = {
 				name: ingredientEnName,
 				kh_name: ingredientKhName,
@@ -140,11 +143,11 @@ Template.itemsTable.events({
 				unit: unit,
 				amount: amount,
 				category: category,
-				totalCost: Math.round((amount * cost) * 100) / 100
+				totalCost: totalCost
 			}
-			
+
 			try {
-				Orders.update({_id: Session.get("orderID")}, { $push: { orderedItems: orderObj }} )
+				Orders.update({_id: Session.get("orderID")}, { $push: { orderedItems: orderObj}, $inc: {totalOrderCost:totalCost}} )
 			} catch (e) {
 				console.log(e);
 			}
