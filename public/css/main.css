@@ -10,3 +10,28 @@
 .modify-icon {
 	cursor: pointer;
 }
+.waves-effect {
+	overflow: initial;
+}
+.subtext {
+	margin-bottom: 0px;
+}
+.float-right {
+    vertical-align: middle;
+}
+.waves-effect {
+    z-index: 0;
+}
+
+#order {
+    position: fixed;
+    right: 0px;
+    overflow-y: auto;
+    max-height: 85%;
+}
+
+.btn-small {
+    height: 36px;
+    line-height: 36px;
+    padding: 0 1rem;
+}

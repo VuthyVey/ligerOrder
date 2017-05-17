@@ -11,6 +11,21 @@ Template.registerHelper('unitFilter', function(amount, unit) {
 	}
 );
 
+Template.home.rendered = function () {
+$('.pushpin-demo-nav').each(function() {
+    var $this = $(this);
+    var $target = $('#' + $(this).attr('data-target'));
+    $this.pushpin({
+      top: 62,
+      bottom: 10000,
+      offset: 0
+    });
+  });
+
+
+        
+}
+
 Template.orderList.helpers({
 	//Return all of the items from database
 	orders: function(){
@@ -33,6 +48,7 @@ Template.orderList.events({
 		var id =  Session.get('orderID');
 		console.log(id)
 		var name = this.name;
+		console.log(this.totalCost)
 		var totalCost = this.totalCost * -1;
 
 		Orders.update(
@@ -238,12 +254,39 @@ Template.recipeContent.rendered = function () {
 };
 
 
+Template.orderDay.rendered = function () {
+
+    $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15 // Creates a dropdown of 15 years to control year
+  });
+  $('.timepicker').pickatime({
+    default: 'now',
+    twelvehour: false, // change to 12 hour AM/PM clock from 24 hour
+    donetext: 'OK',
+  autoclose: false,
+  vibrate: true // vibrate the device when dragging clock hand
+});
+
+
+
+};
+
+
+
+
 
 Template.ingredientInfo.helpers({
 	amountWithServe: function(amount, recipeServe) {	
 		var userServe = Session.get("userServe");
 		var finalAmount = Math.round((amount * (userServe/recipeServe)) * 100) / 100
 		return finalAmount;
+	},
+	isItemsValid: function(item, unit) {
+		var items = Items.find({name:  item, unit: unit}).fetch();
+
+		return items.length == 1;
+
 	}
 });
 

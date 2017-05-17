@@ -77,7 +77,7 @@ Template.newRecipe.events({
 			//id need to modify or delete items
 
 			//create objects for push ingredientsObj 
-			var ingredientsObj = {id: Random.id(), "name": toCapitalize(name.val()), "amount": amount.val(), "unit": unit.val(), "editing": false};
+			var ingredientsObj = {id: Random.id(), "name": name.val(), "amount": amount.val(), "unit": unit.val(), "editing": false};
 			newRecipe.push('ingredients', ingredientsObj);
 			//clear all the inputs text
 			name.val("");
@@ -281,6 +281,7 @@ Template.newRecipe.events({
   		var khRecipeName = $('#khRecipeName');
   		var serve = $("#numOfServe");
   		var readyTime = $('#readyTime');
+  		var imgURL = $('#imgLink');
   		var owner = "Vuthy";
 
   		var recipeObj = newRecipe.get();
@@ -290,6 +291,7 @@ Template.newRecipe.events({
   		recipeObj.kh_name = khRecipeName.val();
   		recipeObj.serve = serve.val();
   		recipeObj.readyTime = readyTime.val();
+  		recipeObj.imgURL = imgURL.val();
   		recipeObj.owner = owner;
 
   		Recipes.insert(recipeObj);
