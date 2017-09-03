@@ -1,0 +1,40 @@
+<template name="order">
+	{{> navbar}}
+
+
+		<div class="row">
+			<div class="col l6">
+
+	       		<ul class="collection" >
+	       			<li class="collection-item">
+	       			<div class="row zero-margin">
+	       				<div class="col l8 zero-padding">
+	       					<input type="text" placeholder="Search Items" id="searchItemInput">
+	       				</div>
+	       			</div>
+			      		
+			      	</li>
+			      	{{#each items}}
+			      <li class="collection-item" style="line-height: 36px;">
+			      <div class="row zero-margin">
+			      	<div class="col l4">{{name}}</div>
+			      	<div class="col l3"><span class="green-text">P{{cost}}</span> / {{unit}}</div>
+			      	<div class="col l2 zero-padding">
+			      		<input type="number" id="orderAmountInput" style="margin-bottom: 0; height: 36px; line-height: 36px; display: none;">
+			      	</div>
+			      	<div class="col l2 zero-padding">
+			      		<span  class="totalSpan" id="totalCost"></span>
+			      	</div>
+			      	<div class="col l1">
+			      		<a id="add-button" href="" class="btn btn-floating"><i class="material-icons">shopping_cart</i></a>
+			      	</div>
+			      </div>
+			      	
+			      </li>
+			      {{/each}}
+			    
+			    </ul>
+	       </div>
+	      
+
+</template>

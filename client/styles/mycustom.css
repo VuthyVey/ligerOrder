@@ -11,3 +11,31 @@
     position: fixed;
     right: 0px;
   }
+
+  .zero-margin {
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+
+.zero-padding {
+  padding: 0px !important;
+}
+
+a#add-button i{
+    -ms-transform: rotate(0deg); /* IE 9 */
+    -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+    transform: rotate(0deg);
+    transition-timing-function: ease-in;
+    transition-duration: 0.1s;
+}
+a#add-button.active i{
+    -ms-transform: rotate(90deg); /* IE 9 */
+    -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
+    transform: rotate(90deg);
+    transition-timing-function: ease-in;
+    transition-duration: 0.1s;
+}
+
+
