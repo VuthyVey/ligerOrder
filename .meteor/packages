@@ -25,5 +25,8 @@ random
 session
 mizzao:autocomplete
 meteorhacks:aggregate
-cleandersonlobo:date-picker-materialize
-materialize:materialize
+accounts-google
+accounts-ui
+service-configuration
+materialize:materialize@=0.99.0
+momentjs:moment

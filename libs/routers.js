@@ -2,6 +2,11 @@ Router.configure({
     layoutTemplate: 'mainLayout'
 });
 
+// Router.route('/home',{
+//     name: 'home',
+//     template: 'home'
+// });
+
 
 Router.route('/new/recipe',{
     name: 'newRecipe',

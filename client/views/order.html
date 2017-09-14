@@ -1,11 +1,30 @@
 <template name="order">
 	{{> navbar}}
-
-
+	
+	{{#if currentUser}}
 		<div class="row">
 			<div class="col l6">
+				{{> itemList}}
+	       		
+	       </div>
+	       <div class="col l6">
+				{{> cart}}
+	       		
+	       </div>
+		</div>
+	{{else}}
+		<div class="row">
+			<div class="container">
+				<h1 class="center">Welcome</h1>
+			</div>
+		</div>
+	{{/if}}
 
-	       		<ul class="collection" >
+</template>
+
+
+<template name="itemList">
+	<ul class="collection z-depth-1" id="itemList">
 	       			<li class="collection-item">
 	       			<div class="row zero-margin">
 	       				<div class="col l8 zero-padding">
@@ -26,7 +45,7 @@
 			      		<span  class="totalSpan" id="totalCost"></span>
 			      	</div>
 			      	<div class="col l1">
-			      		<a id="add-button" href="" class="btn btn-floating"><i class="material-icons">shopping_cart</i></a>
+			      		<a id="addToCart" href="" class="btn btn-floating"><i class="material-icons">shopping_cart</i></a>
 			      	</div>
 			      </div>
 			      	
@@ -34,8 +53,4 @@
 			      {{/each}}
 			    
 			    </ul>
-	       </div>
-	       </div>
-	      
-
 </template>

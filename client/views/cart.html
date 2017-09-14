@@ -1,0 +1,55 @@
+<template name="cart">
+<div class="row zero-margin">
+	<ul class="col l11 collection with-header z-depth-1" style="min-height: 500px">
+	<li class="collection-item">
+		<div class="row zero-padding zero-margin">
+			<div class="col l4 zero-padding">
+				<h5>Order List</h5>
+			</div>
+			<!-- <input type="text" id="orderDate" class="datepicker" placeholder="Please choose an order date!"> -->
+			
+			<div class="input-field col l8">
+				<select id="orderDateSelect">
+					<option value="" disabled selected>Choose your option</option>
+					{{#each orderDates}}
+						<option value="{{this}}">{{this}}</option>
+					{{/each}}
+				</select>
+			</div>
+			
+		</div>
+	</li>
+	{{#if orders}}
+
+	{{#with orders}}
+			{{#each orderedItems}}
+				<li class="collection-item" style="line-height: 36px;">
+					<div class="row zero-margin">
+						<div class="col l6 zero-padding">{{name}}: {{amount}}{{unit}}</div>
+						<div class="col l5 zero-padding">
+							P{{totalCost}}
+						</div>
+						<div class="col l1 zero-padding">
+							<a id="orderDelIngre" href="" class="btn btn-floating right red"><i class="material-icons">cancel</i></a>
+						</div>
+					</div>
+
+					<!-- <span class="badge new" data-badge-caption="free">${{totalCost}}</span>  -->
+				</li>
+			{{/each}}
+
+
+
+		<li class="collection-item center">Total Order Cost: ${{totalOrderCost}}</li>
+		<li class="collection-item"><a href="" class="btn">Order</a></li>
+		
+	{{/with}}
+	{{else}}
+	<a href="" id="createAnOrderBtn" class="btn btn-large center">Create An Order</a>
+	{{/if}}
+</ul>
+</div>
+
+
+
+</template>

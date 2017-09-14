@@ -23,14 +23,14 @@
   padding: 0px !important;
 }
 
-a#add-button i{
+a#addToCart i{
     -ms-transform: rotate(0deg); /* IE 9 */
     -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
     transform: rotate(0deg);
     transition-timing-function: ease-in;
     transition-duration: 0.1s;
 }
-a#add-button.active i{
+a#addToCart.active i{
     -ms-transform: rotate(90deg); /* IE 9 */
     -webkit-transform: rotate(90deg); /* Chrome, Safari, Opera */
     transform: rotate(90deg);
@@ -39,3 +39,7 @@ a#add-button.active i{
 }
 
 
+.collection-item{
+  transition-timing-function: linear;
+  transition-duration: 1s;
+}

@@ -1,12 +1,28 @@
 <template name="navbar">
 	<nav>
     <div class="nav-wrapper">
-      <a href="#" class="brand-logo right">Logo</a>
-      <ul id="nav-mobile" class="left hide-on-med-and-down">
-        <li><a href="sass.html">Sass</a></li>
-        <li><a href="badges.html">Components</a></li>
-        <li><a href="collapsible.html">JavaScript</a></li>
+      <a href="#" class="brand-logo left">Liger Ordering</a>
+      <ul id="nav-mobile" class="right">
+        <li><a href="" id="testing">Ordering</a></li>
+        <li><a id="username" href="">{{currentUser.profile.name}}</a></li>
+        {{#if currentUser}}
+          <li class="right"><a href="" id="logout">Logout</a></li>
+        {{else}}
+          <li><a href="" id="loginWithGoogle">Login with Google</a></li>
+        {{/if}}
       </ul>
     </div>
   </nav>
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4>Modal Header</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+  </div>
+          
 </template>
